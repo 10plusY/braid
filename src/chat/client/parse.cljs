@@ -1,6 +1,8 @@
 (ns chat.client.parse
   (:require [clojure.string :as string]
-            [chat.client.store :as store]))
+            [chat.client.store :as store]
+            [om.dom :as dom]
+            [instaparse.core :as insta]))
 
 (def tag-pattern
   "Pattern to extract tags.  Would prefer for the first subpattern to be a
@@ -37,3 +39,23 @@
         tagless-text (string/replace text tag-pattern
                                      (fn [m] (if (avail-tags (subs (string/trim m) 1)) "" m)))]
     [tags tagless-text]))
+
+(def link-parser
+  (insta/parser
+    "S ::= ( ( LINK ) / DOT  ) *
+    LINK ::= #'http(s)?://\\S+'
+    DOT ::= #'.|\\n'"))
+
+(defn tee [x] (println x) x)
+(defn format-message
+  [content]
+  (println "parse" content)
+  (->> content
+       link-parser
+       vec ; this *should* be redundant, but some times the parse tree seems to be wrapped in an object
+       tee
+       (insta/transform
+         {:DOT str
+          :LINK (fn [link] (dom/a #js {:href link} link))})
+       rest
+       ))

@@ -27,6 +27,7 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [com.taoensso/sente "1.5.0"]
                  [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]
+                 [com.lucasbradstreet/instaparse-cljs "1.4.1.0"]
                  ]
 
   :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
@@ -35,6 +36,8 @@
   :plugins [[lein-environ "1.0.0"]
             [lein-cljsbuild "1.0.6"]
             [jamesnvc/lein-lesscss "1.4.0"] ]
+
+  :clean-targets ^{:protect false} ["resources/public/js/out"]
 
   :lesscss-paths ["resources/less"]
   :lesscss-output-path "resources/public/css/out"

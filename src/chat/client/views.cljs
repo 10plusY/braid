@@ -4,7 +4,7 @@
             [clojure.string :as string]
             [clojure.set :refer [union]]
             [chat.client.dispatcher :refer [dispatch!]]
-            [chat.client.parse :refer [extract-tags]]
+            [chat.client.parse :as parse :refer [extract-tags]]
             [chat.client.store :as store]))
 
 (defn index-of
@@ -20,8 +20,8 @@
     (render [_]
       (dom/div #js {:className "message"}
         (dom/img #js {:className "avatar" :src (get-in @store/app-state [:users (message :user-id) :avatar])})
-        (dom/div #js {:className "content"}
-          (message :content))))))
+        (apply dom/div #js {:className "content"}
+          (parse/format-message (message :content)))))))
 
 (defn tag->color [tag]
   ; normalized is approximately evenly distributed between 0 and 1
