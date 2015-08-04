@@ -46,16 +46,13 @@
     LINK ::= #'http(s)?://\\S+'
     DOT ::= #'.|\\n'"))
 
-(defn tee [x] (println x) x)
 (defn format-message
   [content]
   (println "parse" content)
   (->> content
        link-parser
        vec ; this *should* be redundant, but some times the parse tree seems to be wrapped in an object
-       tee
        (insta/transform
          {:DOT str
           :LINK (fn [link] (dom/a #js {:href link} link))})
-       rest
-       ))
+       rest))
